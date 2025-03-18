@@ -37,16 +37,16 @@ impl System {
         let System { ms, ps, vs } = self;
 
         let k1 = vs;
-        let k2 = increment(&ms, &ps, &k1, h / 2.);
-        let k3 = increment(&ms, &ps, &k2, h / 2.);
-        let k4 = increment(&ms, &ps, &k3, h);
+        let k2 = increment(ms, ps, k1, h / 2.);
+        let k3 = increment(ms, ps, &k2, h / 2.);
+        let k4 = increment(ms, ps, &k3, h);
 
         let increments = k1.iter().zip(k2).zip(k3).zip(k4);
         let vs = increments
             .map(|(((&k1, k2), k3), k4)| (k1 + k2 * 2. + k3 * 2. + k4) / 6.)
             .collect::<Vec<_>>();
 
-        let ps = apply_velos(&ps, &vs, h);
+        let ps = apply_velos(ps, &vs, h);
 
         self.ps = ps;
         self.vs = vs;
