@@ -1,3 +1,4 @@
+mod sim;
 mod vec;
 
 fn main() {
