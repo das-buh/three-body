@@ -1,8 +1,8 @@
 use crate::vec::Vec2;
 
-fn gravity((m1, r1): (f64, Vec2), (m2, r2): (f64, Vec2)) -> Vec2 {
-    const G: f64 = 6.67430e-11;
+const G: f64 = 6.67430e-11;
 
+fn gravity((m1, r1): (f64, Vec2), (m2, r2): (f64, Vec2)) -> Vec2 {
     let r = r2 - r1;
     let f = G * m1 * m2 / r.mag_sq();
     r.norm() * f
