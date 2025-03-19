@@ -22,9 +22,11 @@ impl System {
     }
 
     pub fn remove_body(&mut self, idx: usize) {
-        self.ms.swap_remove(idx);
-        self.ps.swap_remove(idx);
-        self.vs.swap_remove(idx);
+        if idx < self.ms.len() {
+            self.ms.remove(idx);
+            self.ps.remove(idx);
+            self.vs.remove(idx);
+        }
     }
 
     pub fn bodies(&self) -> impl Iterator<Item = (usize, f64, Vec2, Vec2)> {
