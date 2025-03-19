@@ -33,6 +33,32 @@ impl System {
         bodies.map(|(((i, &m), &p), &v)| (i, m, p, v))
     }
 
+    pub fn sum_mass(&self) -> f64 {
+        self.bodies().map(|(_, m, _, _)| m).sum()
+    }
+
+    pub fn center_mass(&self) -> Vec2 {
+        let m = self.sum_mass();
+        let pm = self.bodies().map(|(_, m, p, _)| p * m).sum::<Vec2>();
+        pm / m
+    }
+
+    pub fn energy(&self) -> f64 {
+        let ms = self.sum_mass();
+        let cm = self.center_mass();
+        self.bodies()
+            .map(|(_, m, p, v)| {
+                let k = 0.5 * m * v.mag_sq();
+                let u = G * ms * m / (p - cm).mag();
+                k + u
+            })
+            .sum()
+    }
+
+    pub fn momentum(&self) -> Vec2 {
+        self.bodies().map(|(_, m, _, v)| v * m).sum()
+    }
+
     pub fn step(&mut self, h: f64) {
         let System { ms, ps, vs } = self;
 
