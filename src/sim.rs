@@ -8,6 +8,7 @@ fn gravity((m1, r1): (f64, Vec2), (m2, r2): (f64, Vec2)) -> Vec2 {
     r.norm() * f
 }
 
+#[derive(Default)]
 pub struct System {
     pub ms: Vec<f64>,
     pub ps: Vec<Vec2>,
