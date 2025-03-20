@@ -1,4 +1,5 @@
 use std::{
+    fmt,
     iter::Sum,
     ops::{Add, Div, Mul, Sub},
 };
@@ -67,5 +68,11 @@ impl Vec2 {
         } else {
             Vec2(self.0 / mag, self.1 / mag)
         }
+    }
+}
+
+impl fmt::Display for Vec2 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_fmt(format_args!("({}, {})", self.0, self.1))
     }
 }
