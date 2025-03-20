@@ -35,8 +35,10 @@ fn Measurements() -> View {
     let momentum = sim.0.map(|system| system.momentum());
 
     view! {
-        p { "R = " (cm.get().to_string()) }
-        p { "K + U = " (energy) }
-        p { "p = " (momentum.get().to_string()) }
+        div {
+            p { "R = " (cm.get().to_string()) }
+            p { "K + U = " (energy) }
+            p { "p = " (momentum.get().to_string()) }
+        }
     }
 }
