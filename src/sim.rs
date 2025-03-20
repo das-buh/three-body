@@ -10,9 +10,9 @@ fn gravity((m1, r1): (f64, Vec2), (m2, r2): (f64, Vec2)) -> Vec2 {
 
 #[derive(Default)]
 pub struct System {
-    pub ms: Vec<f64>,
-    pub ps: Vec<Vec2>,
-    pub vs: Vec<Vec2>,
+    ms: Vec<f64>,
+    ps: Vec<Vec2>,
+    vs: Vec<Vec2>,
 }
 
 impl System {
@@ -28,6 +28,18 @@ impl System {
             self.ps.remove(idx);
             self.vs.remove(idx);
         }
+    }
+
+    pub fn ms(&mut self) -> &mut [f64] {
+        &mut self.ms
+    }
+
+    pub fn ps(&mut self) -> &mut [Vec2] {
+        &mut self.ps
+    }
+
+    pub fn vs(&mut self) -> &mut [Vec2] {
+        &mut self.vs
     }
 
     pub fn bodies(&self) -> impl Iterator<Item = (usize, f64, Vec2, Vec2)> {
