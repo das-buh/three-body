@@ -17,7 +17,7 @@ fn App() -> View {
     provide_context(sim);
 
     view! {
-        Bodies()
+        RenderSim()
         Measurements()
     }
 }

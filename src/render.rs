@@ -2,7 +2,7 @@ use crate::{vec::Vec2, Sim};
 use sycamore::prelude::*;
 
 #[component]
-pub fn Bodies() -> View {
+pub fn RenderSim() -> View {
     let sim = use_context::<Sim>();
 
     let bodies = sim.0.map(|system| {
