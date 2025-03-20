@@ -18,8 +18,24 @@ fn App() -> View {
 
     view! {
         Bodies()
+        Measurements()
     }
 }
 
 #[derive(Clone, Copy)]
 struct Sim(Signal<System>);
+
+#[component]
+fn Measurements() -> View {
+    let sim = use_context::<Sim>();
+
+    let cm = sim.0.map(|system| system.center_mass());
+    let energy = sim.0.map(|system| system.energy());
+    let momentum = sim.0.map(|system| system.momentum());
+
+    view! {
+        p { "R = " (cm.get().to_string()) }
+        p { "K + U = " (energy) }
+        p { "p = " (momentum.get().to_string()) }
+    }
+}
