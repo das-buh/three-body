@@ -30,15 +30,27 @@ impl System {
         }
     }
 
-    pub fn ms(&mut self) -> &mut [f64] {
+    pub fn ms(&self) -> &[f64] {
+        &self.ms
+    }
+
+    pub fn ps(&self) -> &[Vec2] {
+        &self.ps
+    }
+
+    pub fn vs(&self) -> &[Vec2] {
+        &self.vs
+    }
+
+    pub fn ms_mut(&mut self) -> &mut [f64] {
         &mut self.ms
     }
 
-    pub fn ps(&mut self) -> &mut [Vec2] {
+    pub fn ps_mut(&mut self) -> &mut [Vec2] {
         &mut self.ps
     }
 
-    pub fn vs(&mut self) -> &mut [Vec2] {
+    pub fn vs_mut(&mut self) -> &mut [Vec2] {
         &mut self.vs
     }
 
