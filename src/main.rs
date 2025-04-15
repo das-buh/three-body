@@ -30,9 +30,9 @@ struct Sim(Signal<System>);
 fn Measurements() -> View {
     let sim = use_context::<Sim>();
 
-    let cm = sim.0.map(|system| system.center_mass());
-    let energy = sim.0.map(|system| system.energy());
-    let momentum = sim.0.map(|system| system.momentum());
+    let cm = sim.0.map(|s| s.center_mass());
+    let energy = sim.0.map(|s| s.energy());
+    let momentum = sim.0.map(|s| s.momentum());
 
     view! {
         div {
