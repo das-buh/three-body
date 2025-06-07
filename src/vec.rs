@@ -1,7 +1,7 @@
 use std::{
     fmt,
     iter::Sum,
-    ops::{Add, Div, Mul, Sub},
+    ops::{Add, AddAssign, Div, Mul, Sub},
 };
 
 #[derive(Clone, Copy, PartialEq)]
@@ -12,6 +12,13 @@ impl Add for Vec2 {
 
     fn add(self, rhs: Self) -> Self::Output {
         Vec2(self.0 + rhs.0, self.1 + rhs.1)
+    }
+}
+
+impl AddAssign for Vec2 {
+    fn add_assign(&mut self, rhs: Self) {
+        self.0 = self.0 + rhs.0;
+        self.1 = self.1 + rhs.1;
     }
 }
 
