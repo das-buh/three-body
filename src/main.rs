@@ -72,6 +72,7 @@ fn Measurements() -> View {
 #[component]
 fn Menu() -> View {
     let sim = use_context::<Sim>();
+    let settings = use_context::<Settings>();
 
     let bodies = sim.0.map(|s| {
         s.bodies()
@@ -80,8 +81,10 @@ fn Menu() -> View {
     });
 
     let add = move |_| {
-        sim.0
-            .update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
+        if !settings.run.get() {
+            sim.0
+                .update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
+        }
     };
 
     let debug = move |_| {
@@ -111,6 +114,7 @@ fn Menu() -> View {
 #[component(inline_props)]
 fn MenuItem(id: u64, m: f64, r: Vec2, v: Vec2) -> View {
     let sim = use_context::<Sim>();
+    let settings = use_context::<Settings>();
 
     fn create_signal_update(
         initial: f64,
@@ -129,8 +133,10 @@ fn MenuItem(id: u64, m: f64, r: Vec2, v: Vec2) -> View {
     let (vy, update_vy) = create_signal_update(v.1, sim, move |s| &mut s.body_mut(id).v.1);
 
     let delete = move |_| {
-        log::debug!("delete {id}");
-        sim.0.update(|s| s.remove_body(id))
+        if !settings.run.get() {
+            log::debug!("delete {id}");
+            sim.0.update(|s| s.remove_body(id))
+        }
     };
 
     view! {
