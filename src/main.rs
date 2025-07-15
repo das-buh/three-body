@@ -18,8 +18,7 @@ fn main() {
 
 #[component]
 fn App() -> View {
-    let sim = Sim(create_signal(System::default()));
-    provide_context(sim);
+    provide_context(Sim(create_signal(System::default())));
 
     provide_context(Settings {
         run: create_signal(false),
