@@ -1,4 +1,4 @@
-use crate::{vec::Vec2, Sim};
+use crate::{Sim, vec::Vec2};
 use sycamore::prelude::*;
 
 #[component]
