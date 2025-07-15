@@ -8,3 +8,4 @@ console_error_panic_hook = "0.1.7"
 log = "0.4.26"
 sycamore = "0.9.1"
 wasm-logger = "0.2.0"
+web-sys = { version = "0.3.77", features = ["HtmlInputElement"] }
