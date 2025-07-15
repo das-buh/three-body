@@ -5,18 +5,15 @@ use sycamore::prelude::*;
 pub fn RenderSim() -> View {
     let sim = use_context::<Sim>();
 
-    let bodies = sim.0.map(|system| {
-        system
-            .bodies()
-            .map(|(i, _, p, _)| (i, p))
-            .collect::<Vec<_>>()
-    });
+    let bodies = sim
+        .0
+        .map(|s| s.bodies().map(|a| (a.id(), a.r)).collect::<Vec<_>>());
 
     view! {
         Indexed(
             list=bodies,
-            view=|(i, Vec2(x, y))| view! {
-                p { (format!("(i={i} p={x},{y})")) }
+            view=|(id, Vec2(x, y))| view! {
+                p { (format!("(i={id} r={x},{y})")) }
             },
         )
     }
