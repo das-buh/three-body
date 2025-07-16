@@ -125,7 +125,7 @@ impl System {
         // Derive new state from weighted increments
         for a in self.bodies_mut() {
             a.v = a.v_acc / 6.;
-            a.r = a.r + a.v * h;
+            a.r += a.v * h;
         }
     }
 
