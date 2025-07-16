@@ -43,12 +43,12 @@ struct Settings {
 
 #[component]
 fn Measurements() -> View {
-    let sim = use_context::<Sim>();
+    let sim = use_context::<Sim>().0;
     let settings = use_context::<Settings>();
 
-    let cm = sim.0.map(|s| s.center_mass());
-    let energy = sim.0.map(|s| s.energy());
-    let momentum = sim.0.map(|s| s.momentum());
+    let cm = sim.map(|s| s.center_mass());
+    let energy = sim.map(|s| s.energy());
+    let momentum = sim.map(|s| s.momentum());
 
     create_effect(move || {
         log::debug!("{settings:?}");
@@ -71,10 +71,10 @@ fn Measurements() -> View {
 
 #[component]
 fn Menu() -> View {
-    let sim = use_context::<Sim>();
+    let sim = use_context::<Sim>().0;
     let settings = use_context::<Settings>();
 
-    let bodies = sim.0.map(|s| {
+    let bodies = sim.map(|s| {
         s.bodies()
             .map(|a @ &Body { m, r, v, .. }| (a.id(), m, r, v))
             .collect::<Vec<_>>()
@@ -82,13 +82,12 @@ fn Menu() -> View {
 
     let add = move |_| {
         if !settings.run.get() {
-            sim.0
-                .update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
+            sim.update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
         }
     };
 
     let debug = move |_| {
-        sim.0.with_untracked(|s| {
+        sim.with_untracked(|s| {
             for a @ &Body { m, r, v, .. } in s.bodies() {
                 let id = a.id();
                 log::debug!("{id} {m} {r} {v}");
@@ -113,16 +112,16 @@ fn Menu() -> View {
 
 #[component(inline_props)]
 fn MenuItem(id: u64, m: f64, r: Vec2, v: Vec2) -> View {
-    let sim = use_context::<Sim>();
+    let sim = use_context::<Sim>().0;
     let settings = use_context::<Settings>();
 
     fn create_signal_update(
         initial: f64,
-        sim: Sim,
+        sim: Signal<System>,
         get_value: impl Fn(&mut System) -> &mut f64,
     ) -> (Signal<f64>, impl Fn(f64)) {
         let signal = create_signal(initial);
-        let update = move |new| sim.0.update(|s| *get_value(s) = new);
+        let update = move |new| sim.update(|s| *get_value(s) = new);
         (signal, update)
     }
 
@@ -135,7 +134,7 @@ fn MenuItem(id: u64, m: f64, r: Vec2, v: Vec2) -> View {
     let delete = move |_| {
         if !settings.run.get() {
             log::debug!("delete {id}");
-            sim.0.update(|s| s.remove_body(id))
+            sim.update(|s| s.remove_body(id))
         }
     };
 
