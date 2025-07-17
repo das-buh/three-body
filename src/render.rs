@@ -3,9 +3,11 @@ use sycamore::prelude::*;
 
 #[component]
 pub fn RenderSim() -> View {
-    let sim = use_context::<Sim>().0;
+    let sim = use_context::<Sim>();
 
-    let bodies = sim.map(|s| s.bodies().map(|a| (a.id(), a.r)).collect::<Vec<_>>());
+    let bodies = sim
+        .system
+        .map(|s| s.bodies().map(|a| (a.id(), a.r)).collect::<Vec<_>>());
 
     view! {
         Indexed(

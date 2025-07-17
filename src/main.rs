@@ -18,7 +18,9 @@ fn main() {
 
 #[component]
 fn App() -> View {
-    provide_context(Sim(create_signal(System::default())));
+    provide_context(Sim {
+        system: create_signal(System::default()),
+    });
 
     provide_context(Settings {
         run: create_signal(false),
@@ -33,7 +35,9 @@ fn App() -> View {
 }
 
 #[derive(Clone, Copy)]
-struct Sim(Signal<System>);
+struct Sim {
+    system: Signal<System>,
+}
 
 #[derive(Clone, Copy, Debug)]
 struct Settings {
@@ -43,12 +47,13 @@ struct Settings {
 
 #[component]
 fn Measurements() -> View {
-    let sim = use_context::<Sim>().0;
+    let sim = use_context::<Sim>();
+    let system = sim.system;
     let settings = use_context::<Settings>();
 
-    let cm = sim.map(|s| s.center_mass());
-    let energy = sim.map(|s| s.energy());
-    let momentum = sim.map(|s| s.momentum());
+    let cm = system.map(|s| s.center_mass());
+    let energy = system.map(|s| s.energy());
+    let momentum = system.map(|s| s.momentum());
 
     create_effect(move || {
         log::debug!("{settings:?}");
@@ -71,10 +76,11 @@ fn Measurements() -> View {
 
 #[component]
 fn Menu() -> View {
-    let sim = use_context::<Sim>().0;
+    let sim = use_context::<Sim>();
+    let system = sim.system;
     let settings = use_context::<Settings>();
 
-    let bodies = sim.map(|s| {
+    let bodies = system.map(|s| {
         s.bodies()
             .map(|a @ &Body { m, r, v, .. }| (a.id(), m, r, v))
             .collect::<Vec<_>>()
@@ -82,12 +88,12 @@ fn Menu() -> View {
 
     let add = move |_| {
         if !settings.run.get() {
-            sim.update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
+            system.update(|s| s.add_body(2e30, Vec2(0., 0.), Vec2(0., 0.)))
         }
     };
 
     let debug = move |_| {
-        sim.with_untracked(|s| {
+        system.with_untracked(|s| {
             for a @ &Body { m, r, v, .. } in s.bodies() {
                 let id = a.id();
                 log::debug!("{id} {m} {r} {v}");
@@ -112,29 +118,30 @@ fn Menu() -> View {
 
 #[component(inline_props)]
 fn MenuItem(id: u64, m: f64, r: Vec2, v: Vec2) -> View {
-    let sim = use_context::<Sim>().0;
+    let sim = use_context::<Sim>();
+    let system = sim.system;
     let settings = use_context::<Settings>();
 
     fn create_signal_update(
         initial: f64,
-        sim: Signal<System>,
+        system: Signal<System>,
         get_value: impl Fn(&mut System) -> &mut f64,
     ) -> (Signal<f64>, impl Fn(f64)) {
         let signal = create_signal(initial);
-        let update = move |new| sim.update(|s| *get_value(s) = new);
+        let update = move |new| system.update(|s| *get_value(s) = new);
         (signal, update)
     }
 
-    let (m, update_m) = create_signal_update(m, sim, move |s| &mut s.body_mut(id).m);
-    let (rx, update_rx) = create_signal_update(r.0, sim, move |s| &mut s.body_mut(id).r.0);
-    let (ry, update_ry) = create_signal_update(r.1, sim, move |s| &mut s.body_mut(id).r.1);
-    let (vx, update_vx) = create_signal_update(v.0, sim, move |s| &mut s.body_mut(id).v.0);
-    let (vy, update_vy) = create_signal_update(v.1, sim, move |s| &mut s.body_mut(id).v.1);
+    let (m, update_m) = create_signal_update(m, system, move |s| &mut s.body_mut(id).m);
+    let (rx, update_rx) = create_signal_update(r.0, system, move |s| &mut s.body_mut(id).r.0);
+    let (ry, update_ry) = create_signal_update(r.1, system, move |s| &mut s.body_mut(id).r.1);
+    let (vx, update_vx) = create_signal_update(v.0, system, move |s| &mut s.body_mut(id).v.0);
+    let (vy, update_vy) = create_signal_update(v.1, system, move |s| &mut s.body_mut(id).v.1);
 
     let delete = move |_| {
         if !settings.run.get() {
             log::debug!("delete {id}");
-            sim.update(|s| s.remove_body(id))
+            system.update(|s| s.remove_body(id))
         }
     };
 
