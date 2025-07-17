@@ -112,7 +112,7 @@ impl System {
 
             for i in 0..self.bodies.len() {
                 let a = self.bodies[i];
-                let f = self.force_net(a.m, a.r);
+                let f = self.force_net(a.id, a.m, a.r);
 
                 let a = &mut self.bodies[i];
                 a.k = a.v + f / a.m * h;
@@ -129,9 +129,9 @@ impl System {
         }
     }
 
-    fn force_net(&self, m: f64, r: Vec2) -> Vec2 {
+    fn force_net(&self, id: u64, m: f64, r: Vec2) -> Vec2 {
         self.bodies()
-            .filter(|a| a.r_aux != r)
+            .filter(|a| a.id != id)
             .map(|a| gravity((m, r), (a.m, a.r_aux)))
             .sum()
     }
